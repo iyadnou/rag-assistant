@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Secrets
+.env
+
+# Data
+data/chroma/
+data/raw/*
+!data/raw/.gitkeep
+
+# OS / editor
+.DS_Store
+.vscode/
+
+# Personal notes for Claude Code (kept local)
+CLAUDE.md

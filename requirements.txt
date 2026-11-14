@@ -1,0 +1,17 @@
+# Core (Milestones 1-7)
+ollama
+chromadb
+pymupdf
+pandas
+python-dotenv
+pytest
+
+# API + UI (Milestone 9)
+fastapi
+uvicorn
+python-multipart   # FastAPI file uploads
+streamlit
+
+# Retrieval improvements (Milestone 8)
+rank_bm25
+sentence-transformers   # reranking; pulls in PyTorch (~1GB)
