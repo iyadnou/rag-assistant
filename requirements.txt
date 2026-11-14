@@ -1,17 +1,16 @@
-# Core (Milestones 1-7)
+# RAG pipeline
 ollama
 chromadb
 pymupdf
-pandas
 python-dotenv
-pytest
+rank_bm25               # keyword search (BM25)
+sentence-transformers   # cross-encoder reranking; pulls in PyTorch (~1 GB)
 
-# API + UI (Milestone 9)
+# API + UI
 fastapi
 uvicorn
-python-multipart   # FastAPI file uploads
+python-multipart        # file uploads in FastAPI
 streamlit
 
-# Retrieval improvements (Milestone 8)
-rank_bm25
-sentence-transformers   # reranking; pulls in PyTorch (~1GB)
+# Tests
+pytest

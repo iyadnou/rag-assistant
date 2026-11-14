@@ -1,4 +1,4 @@
-"""Milestone 1 smoke test: can Python talk to Ollama?
+"""Setup check: can Python talk to Ollama (chat model + embedding model)?
 
 Run with:  .venv/bin/python src/check_ollama.py
 """

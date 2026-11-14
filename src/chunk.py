@@ -1,4 +1,4 @@
-"""Milestone 3: split page records into overlapping fixed-size chunks.
+"""Split page records into overlapping fixed-size chunks.
 
 Run with:  .venv/bin/python -m src.chunk
 """
@@ -7,10 +7,10 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-# Read from the environment so Milestone 8 experiments can change them without editing code:
-#   CHUNK_SIZE=100 CHUNK_OVERLAP=20 .venv/bin/python -m src.store
-CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 200))  # words per chunk (~1,300 characters, ~260 tokens)
-CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", 40))  # words shared between neighbouring chunks
+# Override in .env, then rebuild the index (python -m src.store).
+# 100/20 beat 200/40 and 400/80 in retrieval tests (see README).
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 100))  # words per chunk (~650 characters, ~130 tokens)
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", 20))  # words shared between neighbouring chunks
 
 
 def split_text(text: str, size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP) -> list[str]:

@@ -1,4 +1,4 @@
-"""Milestone 9: HTTP API around the RAG pipeline.
+"""HTTP API around the RAG pipeline.
 
 Run:   .venv/bin/uvicorn api.main:app --reload
 Docs:  http://localhost:8000/docs  (interactive: try /ask in the browser)

@@ -1,4 +1,4 @@
-"""Milestone 2: load PDFs into clean text + metadata, one record per page.
+"""Load PDFs into clean text + metadata, one record per page.
 
 Run with:  .venv/bin/python -m src.ingest
 """

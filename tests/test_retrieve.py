@@ -44,7 +44,7 @@ def test_empty_store_returns_nothing(tmp_path, monkeypatch):
     assert retrieve_module.retrieve("x", path=str(tmp_path)) == []
 
 
-# ---------- Milestone 8: BM25 + hybrid ----------
+# ---------- BM25, hybrid and rerank ----------
 
 def test_bm25_rewards_exact_rare_words(tmp_path):
     # Realistic case: the keyword appears in only 1 of 4 chunks.

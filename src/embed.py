@@ -1,4 +1,4 @@
-"""Milestone 4: turn text into vectors with Ollama's nomic-embed-text."""
+"""Turn text into vectors with Ollama's nomic-embed-text."""
 import os
 
 import ollama

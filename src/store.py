@@ -1,4 +1,4 @@
-"""Milestone 4: save chunks + their vectors in Chroma, a local vector database.
+"""Save chunks + their vectors in Chroma, a local vector database.
 
 Build (or rebuild) the index with:  .venv/bin/python -m src.store
 """

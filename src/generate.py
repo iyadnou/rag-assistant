@@ -1,4 +1,4 @@
-"""Milestone 6: build a prompt from retrieved chunks and ask the LLM for a cited answer."""
+"""Build a prompt from retrieved chunks and ask the LLM for a cited answer."""
 import os
 import re
 

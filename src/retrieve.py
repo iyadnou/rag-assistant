@@ -1,9 +1,9 @@
-"""Milestones 5 + 8: find the chunks most relevant to a question.
+"""Find the chunks most relevant to a question.
 
 Modes (set RETRIEVAL_MODE in .env, or pass mode=...):
-  dense  - embedding similarity only (Milestone 5 baseline)
+  dense  - embedding similarity only
   hybrid - dense + BM25 keyword search, merged with Reciprocal Rank Fusion
-  rerank - hybrid finds CANDIDATES, then a cross-encoder re-scores and re-orders them
+  rerank - hybrid finds CANDIDATES, then a cross-encoder re-scores and re-orders them (default)
 
 Try it:  .venv/bin/python -m src.retrieve "What optimizer did the authors use?"
 """
@@ -18,8 +18,8 @@ from src.embed import embed_query
 from src.store import CHROMA_PATH, get_collection
 
 load_dotenv()
-TOP_K = 5  # how many chunks to return (and, in Milestone 6, to give the LLM)
-MODE = os.getenv("RETRIEVAL_MODE", "dense")
+TOP_K = 5  # how many chunks to return, and to give the LLM
+MODE = os.getenv("RETRIEVAL_MODE", "rerank")
 CANDIDATES = 20  # hybrid: how many results each method contributes before fusing
 RRF_K = 60  # standard constant from the RRF paper; dampens the advantage of rank 1 over rank 2
 RERANK_MODEL = os.getenv("RERANK_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
