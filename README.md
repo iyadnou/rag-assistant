@@ -4,11 +4,14 @@ Upload your own PDFs, ask questions in plain language, and get answers that **ci
 
 Everything runs on your own computer: no API keys, no cloud services, and your documents never leave your machine. The retrieval-augmented generation (RAG) pipeline is written by hand, with no LangChain or LlamaIndex, so every step is visible and easy to follow.
 
+Example of the answer format:
+
 ```
-Q: What optimizer did the authors use?
-A: The authors used the Adam optimizer with β1 = 0.9, β2 = 0.98, and ϵ = 10−9 [1][3].
-   [1] attention.pdf, page 7
-   [3] attention.pdf, page 11
+Q: How many vacation days do new employees get?
+A: New employees receive 20 days of paid vacation per year [1],
+   which can be carried over for up to 3 months [2].
+   [1] employee-handbook.pdf, page 12
+   [2] employee-handbook.pdf, page 13
 ```
 
 ## Features
@@ -109,14 +112,13 @@ flowchart LR
 
 ## Design decisions
 
-The settings were chosen by measurement, not guesswork. During development, each option was tested on a 50-question set about the paper *Attention Is All You Need* (42 answerable questions and 8 deliberately unanswerable ones). That test set isn't included in this repository. **Hit rate** below means the passage containing the answer was among the retrieved chunks.
-
-1. **Hybrid search was the biggest improvement.** Adding BM25 keyword search raised the hit rate from **81% to 93%**, and it helped at every chunk size tried. Technical documents are full of exact terms that embeddings blur, such as `Adam`, `warmup_steps` and `d_model`; BM25 matches them exactly. Reciprocal Rank Fusion merges the two ranked lists by **position only**, because cosine scores (0 to 1) and BM25 scores (0 to about 20) aren't comparable.
-2. **Smaller chunks win, once the comparison is fair.** 400-word chunks first looked perfect (100% hit rate), but 5 chunks of 400 words cover 21% of a 15-page paper. With the same ~1,000-word budget for every size, 100-word chunks scored **97.6%**, 200-word chunks 92.9% and 400-word chunks **88.1%**.
-3. **Reranking improves the ordering.** A cross-encoder reads the question and each passage *together*, so the best passage lands at #1 more often (MRR, the mean reciprocal rank, rose from 0.735 to 0.794). It's too slow to run on every chunk, so it only re-orders the top candidates. The final setup sends the model **half as much text** as the alternatives, with a 95% hit rate.
-4. **Most wrong answers came from retrieval, not generation.** In the original setup, 7 of 8 wrong answers happened because search missed the right passage. In 6 of those 7, the model correctly said "I don't know" instead of inventing an answer. That's why the improvements focused on retrieval.
-5. **Refusing is the generator's job.** Search always returns *something*: "What is the capital of France?" still returned 5 chunks, at a similarity of about 0.51 against about 0.67–0.77 for real matches. A similarity cutoff can't catch near misses, so the model decides, and code detects its exact refusal sentence.
-6. **Model choice matters for speed.** The `qwen3:4b` tag always "thinks" before answering, taking about 90 seconds to say hello. `qwen3:4b-instruct` answers in a few seconds.
+1. **Page-level metadata from the start.** Text is extracted page by page, and every chunk carries its file name and page number. Without that, the app couldn't cite where an answer came from.
+2. **Hybrid search: keywords plus meaning.** Embeddings find passages with similar *meaning* but can blur exact terms such as names, codes and numbers; BM25 keyword search matches those exactly. Combining both finds the right passage more reliably than either alone. Reciprocal Rank Fusion merges the two ranked lists by **position only**, because cosine scores (0 to 1) and BM25 scores (0 to about 20) can't be compared directly.
+3. **Small chunks.** 100-word chunks keep each one focused on a single idea, so its vector represents that idea precisely, and the model gets less irrelevant text. The 20-word overlap means a sentence that falls on a boundary still appears whole in one chunk.
+4. **Reranking for better ordering.** A cross-encoder reads the question and each passage *together*, which judges relevance more accurately than comparing two separate vectors. It's too slow to run on every chunk, so it only re-orders the top 20 candidates from hybrid search.
+5. **Refusing is the model's job, not the search's.** Search always returns *something*, even for an unrelated question. A similarity cutoff can't reliably separate a near miss from a real match, so the prompt tells the model to answer only from the sources, and to reply with one exact sentence when they don't contain the answer. The app detects that sentence and shows it as a refusal.
+6. **Clean citations.** Documents often contain their own bracketed references, such as `[20]`, which would be confused with the app's `[1]`, `[2]`. These are removed when a PDF is read, and any citation in an answer that doesn't point to a real source is removed too.
+7. **A fast, non-"thinking" model.** `qwen3:4b-instruct` answers directly in a few seconds. The plain `qwen3:4b` tag reasons at length before every answer, which can take over a minute on a laptop.
 
 ---
 
